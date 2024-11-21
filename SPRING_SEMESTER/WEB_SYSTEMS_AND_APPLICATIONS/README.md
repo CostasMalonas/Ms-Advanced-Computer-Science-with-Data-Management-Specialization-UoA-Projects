@@ -46,15 +46,19 @@ This tool stands out by emphasizing the **calculation of review quality scores**
   ## **bash**
    - pip install selenium beautifulsoup4 pandas
 
-Set Up ChromeDriver:
+## **Set Up ChromeDriver**:
 
-Download and place chromedriver.exe in the project directory.
-Ensure the ChromeDriver version matches your Chrome browser version.
-Run the Crawler: Execute the script in the terminal:
+- Download and place chromedriver.exe in the project directory.
+- Ensure the ChromeDriver version matches your Chrome browser version.
 
-bash
-Copy code
-python main.py
-Choose a Category: The program will prompt you to select a product category (e.g., Hardware, Mobile Phones).
+## **Run the Crawler**: 
+- Execute the script in the terminal:
 
-Export Data: The collected data will be saved to an Excel file named output.xlsx in the project directory.
+## **bash**
+- python main.py
+
+## **Choose a Category**: 
+- The program will prompt you to select a product category (e.g., Hardware, Mobile Phones).
+
+## **Export Data**: 
+- The collected data will be saved to an Excel file named output.xlsx in the project directory.
