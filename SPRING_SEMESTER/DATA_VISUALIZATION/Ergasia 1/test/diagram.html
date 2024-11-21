@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<title>Diagram</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script>
+  $(document).ready(function(){
+    $(".box_svg").click(function(){
+      $("#my_prof").fadeIn("slow");
+      $("#mySVG").fadeOut("slow");
+      $(".hid_1").css("display", "inline-block");
+    });
+  });
+
+  $(document).ready(function(){
+    $(".box_svg_2").click(function(){
+      $("#git_prof").fadeIn("slow");
+      $("#mySVG_2").fadeOut("slow");
+      $(".hid_2").css("display", "inline-block");
+    });
+  });
+
+  $(document).ready(function(){
+    $(".box_svg_3").click(function(){
+      $("#home_ic").fadeIn("slow");
+      $("#mySVG_3").fadeOut("slow");
+      $(".hid_3").css("display", "inline-block");
+    });
+  });
+  </script>
+</head>
+<body>
+
+
+
+<!-- Hidden Sidebar (reveals when clicked on menu icon)-->
+<nav class="w3-sidebar w3-black w3-animate-right w3-xxlarge" style="display:none;padding-top:150px;right:0;z-index:2" id="mySidebar">
+  <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-black w3-xxxlarge w3-display-topright" style="padding:0 12px;">
+    <i class="fa fa-remove"></i>
+  </a>
+  <div class="w3-bar-block w3-center">
+    <a href="index.html" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">About</a>
+    <a href="diagram.html" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">Diagram</a>
+    <a href="sources.html" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">Sources</a>
+  </div>
+</nav>
+
+<!-- Page Content -->
+<div class="w3-main w3-padding-large">
+
+  <!-- Menu icon to open sidebar -->
+  <span class="w3-button w3-top w3-white w3-xxlarge w3-text-grey w3-hover-text-black" style="width:auto;right:0;" onclick="openNav()"><i class="fa fa-bars"></i></span>
+
+  <!-- Header -->
+  <header class="w3-container w3-center" id="home">
+    <h1 class="w3-jumbo"><b>Pandemic Causes Spike in Anxiety & Depression</b></h1>
+  </header>
+
+  <div class="text-center" align="center">
+    <a href="https://www.statista.com/chart/21878/impact-of-coronavirus-pandemic-on-mental-health/"><img src="anxiety_and_depression.jpg" class="rounded"></a>
+  </div>
+
+  <!-- Diagram Section -->
+  <div class="w3-content w3-justify w3-text-grey" id="about" align="center">
+
+    <hr class="w3-opacity">
+    <p>I find that diagram which is showing a spike in anxiety and depression due to the pandemic interesting because it highlights the significant impact of a global event on mental health. The COVID-19 pandemic has disrupted daily life, caused economic uncertainty, and increased feelings of isolation and loneliness for many people. It is not surprising that this unprecedented situation has resulted in an increase in anxiety and depression.
+
+From the perspective of a software engineer like me, this information could be particularly relevant if you are developing applications or software that are designed to improve mental health or alleviate symptoms of anxiety and depression. Understanding the effects of the pandemic on mental health can help inform the design and development of effective tools and interventions.
+
+
+
+  <!-- End Diagram Section -->
+
+
+  <!-- Footer -->
+  <footer class="w3-container w3-padding-64 w3-light-grey w3-center w3-opacity w3-xlarge">
+    <svg class="box_svg" id="mySVG" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.000000 512.000000"  preserveAspectRatio="xMidYMid meet"  onclick="show()">
+
+    <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+    fill="#000000" stroke="none">
+    <path class="first" d="M2383 5109 c-693 -62 -1270 -422 -1586 -992 -151 -273 -217 -520
+    -217 -817 l0 -156 -46 -89 c-91 -176 -216 -337 -393 -502 -103 -96 -141 -158
+    -141 -228 1 -119 113 -219 324 -291 110 -38 113 -45 65 -149 -18 -36 -34 -86
+    -36 -109 -4 -35 -1 -47 23 -75 30 -36 114 -81 152 -81 12 0 22 -2 22 -3 0 -2
+    -25 -29 -56 -60 -57 -56 -57 -57 -52 -108 5 -47 10 -56 61 -103 72 -67 75 -86
+    42 -222 -23 -91 -27 -121 -23 -213 6 -140 30 -202 107 -280 95 -98 211 -142
+    376 -142 113 0 169 13 395 90 96 32 348 118 560 189 383 130 1388 470 1760
+    597 107 36 245 90 305 120 419 206 738 571 885 1014 62 186 81 292 87 496 6
+    191 -3 295 -38 445 -26 113 -36 135 -65 149 -18 8 -240 11 -779 11 l-755 0 0
+    -80 0 -80 719 0 719 0 18 -92 c15 -74 19 -136 19 -303 -1 -194 -3 -219 -29
+    -329 -117 -498 -431 -890 -883 -1103 -51 -24 -261 -100 -465 -169 -205 -69
+    -437 -148 -515 -174 l-143 -49 0 70 0 69 80 0 80 0 0 80 0 80 -134 0 c-187 0
+    -180 8 -186 -196 l-5 -157 -69 -24 c-39 -12 -74 -23 -78 -23 -4 0 -8 126 -8
+    280 l0 280 320 0 320 0 0 80 0 80 -374 0 c-353 0 -375 -1 -397 -19 l-24 -19
+    -5 -373 -5 -372 -69 -24 c-39 -12 -74 -23 -78 -23 -4 0 -8 223 -8 495 l0 495
+    640 0 640 0 0 80 0 80 -695 0 -696 0 -24 -25 -25 -24 0 -579 0 -580 -262 -90
+    c-145 -49 -348 -117 -453 -152 l-189 -62 -106 4 c-118 4 -180 25 -239 81 -78
+    74 -92 195 -45 379 37 142 21 232 -55 315 l-29 32 22 14 c32 21 153 73 226 96
+    134 44 147 51 160 81 14 34 7 63 -23 90 -19 18 -35 20 -169 20 -129 0 -263 11
+    -306 25 -9 3 -6 18 14 56 71 141 25 275 -112 324 -182 65 -234 91 -260 131 -9
+    13 -13 32 -9 44 4 11 75 89 158 173 175 174 258 286 349 465 l63 123 6 212 c6
+    193 9 222 37 327 133 500 470 905 935 1125 247 117 488 174 800 191 l127 7 0
+    -202 0 -201 -253 0 c-240 0 -253 1 -265 20 -21 35 -90 63 -140 57 -187 -21
+    -187 -293 0 -314 50 -6 119 22 140 57 12 19 25 20 265 20 l253 0 0 -455 0
+    -456 25 -24 c22 -23 32 -25 120 -25 l95 0 0 80 0 80 -40 0 -40 0 0 760 0 760
+    -162 -1 c-90 -1 -204 -5 -255 -10z"/>
+    <path class="second" d="M3034 5104 c-47 -17 -106 -69 -130 -116 -22 -42 -28 -124 -14 -178 9
+    -33 27 -59 66 -97 29 -29 60 -53 69 -53 13 0 15 -101 15 -896 l0 -897 -34 -38
+    c-62 -68 -60 -157 3 -220 66 -66 159 -65 223 2 49 51 58 108 30 172 -11 25
+    -30 52 -41 59 -20 12 -21 22 -21 145 l0 133 240 0 240 0 0 -446 0 -447 -34
+    -38 c-62 -68 -60 -157 3 -220 66 -66 159 -65 223 2 49 51 58 108 30 172 -11
+    25 -30 52 -41 59 -21 13 -21 17 -21 511 0 525 -2 544 -45 561 -9 3 -147 6
+    -306 6 l-289 0 0 440 0 440 210 0 c184 0 210 -2 210 -16 0 -27 101 -119 146
+    -132 94 -28 169 -8 239 63 102 101 102 229 0 330 -70 71 -145 91 -239 63 -45
+    -13 -146 -105 -146 -132 0 -14 -26 -16 -210 -16 l-210 0 0 169 0 169 30 12
+    c29 12 83 66 106 106 11 18 22 18 500 -15 298 -21 493 -38 500 -45 7 -6 54
+    -138 105 -293 l93 -282 -43 -38 c-114 -97 -121 -244 -16 -348 52 -53 102 -75
+    167 -75 123 0 238 115 238 238 0 87 -62 184 -140 218 l-40 18 -116 348 c-89
+    267 -121 352 -137 363 -16 10 -168 24 -560 52 l-539 38 -18 35 c-54 105 -182
+    154 -296 114z m125 -154 c31 -16 46 -65 31 -100 -23 -55 -84 -67 -125 -25 -65
+    64 14 168 94 125z m720 -640 c31 -16 46 -65 31 -100 -23 -55 -84 -67 -125 -25
+    -65 64 14 168 94 125z m816 -335 c16 -15 25 -36 25 -55 0 -19 -9 -40 -25 -55
+    -15 -16 -36 -25 -55 -25 -19 0 -40 9 -55 25 -16 15 -25 36 -25 55 0 19 9 40
+    25 55 15 16 36 25 55 25 19 0 40 -9 55 -25z"/>
+    <path class="third" d="M962 3057 c7 -79 34 -133 94 -186 152 -133 391 -63 449 131 8 29 15
+    67 15 85 l0 33 -80 0 -80 0 0 -32 c0 -63 -62 -128 -120 -128 -36 0 -90 31
+    -105 61 -8 15 -15 44 -15 64 l0 35 -81 0 -82 0 5 -63z"/>
+    <path class="fourth" d="M2685 914 c-757 -262 -1055 -370 -1068 -385 -15 -19 -17 -47 -17
+    -251 l0 -229 25 -24 24 -25 1711 0 1711 0 24 25 c30 29 33 74 8 103 -10 12
+    -278 135 -613 281 -327 142 -607 265 -622 272 l-28 12 0 259 c0 306 -6 330
+    -83 327 -12 0 -494 -165 -1072 -365z m995 -18 l0 -194 -82 -22 c-46 -12 -86
+    -25 -90 -29 -7 -6 23 -136 34 -146 2 -3 46 7 97 20 51 14 102 25 114 24 12 0
+    90 -31 172 -67 l150 -67 3 -128 3 -127 -893 1 -893 1 160 43 c88 24 170 47
+    183 50 16 4 22 11 18 23 -3 9 -12 43 -21 75 -9 31 -22 57 -28 57 -6 0 -195
+    -49 -418 -110 -224 -60 -412 -110 -418 -110 -7 0 -11 38 -11 118 l0 117 958
+    332 c526 182 958 331 960 332 1 1 2 -86 2 -193z m771 -646 l204 -90 -207 0
+    -208 0 0 90 c0 50 1 90 3 90 2 0 95 -40 208 -90z"/>
+    <path class="fifth" d="M2980 783 c-68 -25 -145 -106 -166 -178 -39 -138 18 -267 150 -338
+    40 -22 49 -22 499 -25 l457 -3 0 81 0 80 -294 0 -294 0 14 38 c61 171 -83 364
+    -270 361 -28 0 -71 -8 -96 -16z m184 -182 c26 -27 31 -39 31 -81 0 -43 -5 -54
+    -33 -82 -28 -28 -39 -33 -82 -33 -43 0 -54 5 -82 33 -28 28 -33 39 -33 81 0
+    52 25 92 70 112 37 16 96 3 129 -30z"/>
+    </g>
+    </svg>
+    <svg  class="box_svg_2" viewBox="0 0 100 100" data-name="Layer 1" id="mySVG_2" xmlns="http://www.w3.org/2000/svg">
+      <title/>
+      <path class="mySVG_2_class" d="M80.49,32.94,67.06,19.51A5.18,5.18,0,0,0,63.4,18H23.17A5.18,5.18,0,0,0,18,23.17V76.83A5.18,5.18,0,0,0,23.17,82H76.83A5.18,5.18,0,0,0,82,
+        76.83V36.59A5.15,5.15,0,0,0,80.49,32.94ZM58.19,22V32.88H31.67V22ZM37.36,78V59.33H62.64V78ZM78,76.83A1.17,1.17,0,0,1,76.83,78H66.64V57.33a2,2,0,
+        0,0-2-2H35.36a2,2,0,0,0-2,2V78H23.17A1.17,1.17,0,0,1,22,76.83V23.17A1.17,1.17,0,0,1,23.17,22h4.5V34.88a2,2,0,0,0,2,2H60.19a2,2,0,0,
+        0,2-2V22H63.4a1.22,1.22,0,0,1,.83.34L77.66,35.77a1.15,1.15,0,0,1,.34.82ZM34.75,29.25v-3a2,2,0,0,1,4,0v3a2,2,0,0,1-4,0Z"/>
+      </svg>
+
+      <svg  class="box_svg_3" id="mySVG_3" viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg">
+      <path class="mySVG_3_class" fill-rule="evenodd" clip-rule="evenodd" d="M2 6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569
+        18 19 18H13V19H15C15.5523 19 16 19.4477 16 20C16 20.5523 15.5523 21 15 21H9C8.44772 21 8 20.5523 8 20C8 19.4477 8.44772 19 9
+        19H11V18H5C3.34315 18 2 16.6569 2 15V6ZM5 5C4.44772 5 4 5.44772 4 6V15C4 15.5523 4.44772 16 5 16H19C19.5523 16 20 15.5523 20 15V6C20
+        5.44772 19.5523 5 19 5H5Z" />
+      </svg>
+
+    <div class="hidden_icons" id="hid_ic">
+      <div class="hid_1">
+        <a href="https://www.linkedin.com/in/konstantinos-malonas-28793910a/" class="linkedIn_prof" id="my_prof"><i class="fa fa-linkedin w3-hover-opacity" style="font-size:36px"></i></a>
+      </div>
+      <div class="hid_2">
+        <a href="https://github.com/CostasMalonas?tab=repositories" class="github_prof" id="git_prof"><i class="fa fa-github" style="font-size:36px"></i></a>
+      </div>
+      <div class="hid_3">
+        <a href="index.html" class="homepage" id="home_ic"><i class="fa fa-home" style="font-size:36px"></i></a>
+      </div>
+
+  </footer>
+
+<!-- END PAGE CONTENT -->
+</div>
+
+<script>
+// Open and close sidebar
+function openNav() {
+  document.getElementById("mySidebar").style.width = "60%";
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function closeNav() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+
+function show() {
+
+    /* Access image by id and change
+    the display property to block*/
+    document.getElementById('my_prof').style.display = "block";
+
+    document.getElementById('mySVG').style.display = "none";
+}
+
+</script>
+
+</body>
+</html>

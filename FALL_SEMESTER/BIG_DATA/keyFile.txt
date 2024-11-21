@@ -1,0 +1,13 @@
+name string
+surname string
+age int
+height float
+salary float 
+cars int 
+houses int
+kids int 
+married string
+haircolor string
+address string
+nationality string 
+profession string

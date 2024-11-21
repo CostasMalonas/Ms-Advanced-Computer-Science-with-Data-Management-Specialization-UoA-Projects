@@ -1,0 +1,568 @@
+<?xml version="1.0"?>
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.semanticweb.org/kosta/ontologies/2022/11/untitled-ontology-24"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     ontologyIRI="http://www.semanticweb.org/kosta/ontologies/2022/11/untitled-ontology-24">
+    <Prefix name="" IRI="http://www.semanticweb.org/kosta/ontologies/2022/11/untitled-ontology-24"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Declaration>
+        <Class IRI="#PostgraduateRecord"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Postgraduate_Course"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Postgraduate_Programme"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Postgraduate_Student"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Record"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Student"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#UndergraduateRecord"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Undergraduate_Course"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Undergraduate_Programme"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Undergraduate_Student"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#University"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#PostCourseMark"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#UnderCourseMark"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#containsPostProgrammeCourses"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#containsUnderProgrammeCourses"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#followsPostgraduateProgrammeCourse"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#followsUndergraduateProgrammeCourse"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#hasPostRecord"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#hasRecord"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#hasUnderRecord"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#isContainedInPostRecord"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#isContainedInUnderRecord"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#PostMark"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#StudentsName"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#UnderMark"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Artificial_Intelligence_I"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Artificial__Intelligence__II"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Knowledge_Technologies"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Laura"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Lauras_Record"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Maria"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Marias_Record"/>
+    </Declaration>
+    <Declaration>
+        <AnnotationProperty IRI="#CoursesMark"/>
+    </Declaration>
+    <Declaration>
+        <AnnotationProperty IRI="#containsCourse"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#PostgraduateRecord"/>
+        <Class IRI="#Record"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#PostgraduateRecord"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#containsPostProgrammeCourses"/>
+            <Class IRI="#Postgraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#PostgraduateRecord"/>
+        <ObjectMaxCardinality cardinality="2">
+            <ObjectProperty IRI="#containsPostProgrammeCourses"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectMaxCardinality>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Course"/>
+        <Class IRI="#Postgraduate_Programme"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Course"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#isContainedInPostRecord"/>
+            <Class IRI="#PostgraduateRecord"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Course"/>
+        <DataSomeValuesFrom>
+            <DataProperty IRI="#PostMark"/>
+            <Datatype abbreviatedIRI="xsd:double"/>
+        </DataSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Course"/>
+        <DataMaxCardinality cardinality="2">
+            <DataProperty IRI="#UnderMark"/>
+            <Datatype abbreviatedIRI="xsd:double"/>
+        </DataMaxCardinality>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Programme"/>
+        <Class IRI="#University"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Student"/>
+        <Class IRI="#Student"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Student"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#followsPostgraduateProgrammeCourse"/>
+            <Class IRI="#Postgraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Student"/>
+        <ObjectExactCardinality cardinality="1">
+            <ObjectProperty IRI="#hasPostRecord"/>
+            <Class IRI="#PostgraduateRecord"/>
+        </ObjectExactCardinality>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Student"/>
+        <ObjectMaxCardinality cardinality="2">
+            <ObjectProperty IRI="#followsPostgraduateProgrammeCourse"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectMaxCardinality>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Postgraduate_Student"/>
+        <DataSomeValuesFrom>
+            <DataProperty IRI="#StudentsName"/>
+            <Datatype abbreviatedIRI="rdf:PlainLiteral"/>
+        </DataSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#UndergraduateRecord"/>
+        <Class IRI="#Record"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#UndergraduateRecord"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#containsUnderProgrammeCourses"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Undergraduate_Course"/>
+        <Class IRI="#Undergraduate_Programme"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Undergraduate_Course"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#isContainedInUnderRecord"/>
+            <Class IRI="#UndergraduateRecord"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Undergraduate_Course"/>
+        <DataSomeValuesFrom>
+            <DataProperty IRI="#UnderMark"/>
+            <Datatype abbreviatedIRI="xsd:double"/>
+        </DataSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Undergraduate_Programme"/>
+        <Class IRI="#University"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Undergraduate_Student"/>
+        <Class IRI="#Student"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Undergraduate_Student"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#followsUndergraduateProgrammeCourse"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Undergraduate_Student"/>
+        <ObjectExactCardinality cardinality="1">
+            <ObjectProperty IRI="#hasUnderRecord"/>
+            <Class IRI="#UndergraduateRecord"/>
+        </ObjectExactCardinality>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Undergraduate_Student"/>
+        <DataSomeValuesFrom>
+            <DataProperty IRI="#StudentsName"/>
+            <Datatype abbreviatedIRI="rdf:PlainLiteral"/>
+        </DataSomeValuesFrom>
+    </SubClassOf>
+    <DisjointClasses>
+        <Class IRI="#PostgraduateRecord"/>
+        <Class IRI="#UndergraduateRecord"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#Postgraduate_Programme"/>
+        <Class IRI="#Undergraduate_Programme"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#Postgraduate_Student"/>
+        <Class IRI="#Undergraduate_Student"/>
+    </DisjointClasses>
+    <ClassAssertion>
+        <Class IRI="#Undergraduate_Course"/>
+        <NamedIndividual IRI="#Artificial_Intelligence_I"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#Postgraduate_Course"/>
+        <NamedIndividual IRI="#Artificial__Intelligence__II"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#Postgraduate_Course"/>
+        <NamedIndividual IRI="#Knowledge_Technologies"/>
+    </ClassAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#containsUnderProgrammeCourses"/>
+        <NamedIndividual IRI="#Artificial_Intelligence_I"/>
+        <NamedIndividual IRI="#Artificial_Intelligence_I"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#isContainedInPostRecord"/>
+        <NamedIndividual IRI="#Knowledge_Technologies"/>
+        <NamedIndividual IRI="#Marias_Record"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#followsUndergraduateProgrammeCourse"/>
+        <NamedIndividual IRI="#Laura"/>
+        <NamedIndividual IRI="#Artificial_Intelligence_I"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#hasRecord"/>
+        <NamedIndividual IRI="#Laura"/>
+        <NamedIndividual IRI="#Lauras_Record"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#containsUnderProgrammeCourses"/>
+        <NamedIndividual IRI="#Lauras_Record"/>
+        <NamedIndividual IRI="#Artificial_Intelligence_I"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#followsPostgraduateProgrammeCourse"/>
+        <NamedIndividual IRI="#Maria"/>
+        <NamedIndividual IRI="#Knowledge_Technologies"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#hasPostRecord"/>
+        <NamedIndividual IRI="#Maria"/>
+        <NamedIndividual IRI="#Marias_Record"/>
+    </ObjectPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#UnderMark"/>
+        <NamedIndividual IRI="#Artificial_Intelligence_I"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#double">10.0</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#PostMark"/>
+        <NamedIndividual IRI="#Knowledge_Technologies"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#double">9.0</Literal>
+    </DataPropertyAssertion>
+    <InverseObjectProperties>
+        <ObjectProperty IRI="#containsPostProgrammeCourses"/>
+        <ObjectProperty IRI="#isContainedInPostRecord"/>
+    </InverseObjectProperties>
+    <InverseObjectProperties>
+        <ObjectProperty IRI="#containsUnderProgrammeCourses"/>
+        <ObjectProperty IRI="#isContainedInUnderRecord"/>
+    </InverseObjectProperties>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#PostCourseMark"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#PostCourseMark"/>
+            <Class IRI="#Postgraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#UnderCourseMark"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#UnderCourseMark"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#containsPostProgrammeCourses"/>
+        <Class IRI="#PostgraduateRecord"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#containsUnderProgrammeCourses"/>
+        <Class IRI="#UndergraduateRecord"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#followsPostgraduateProgrammeCourse"/>
+        <Class IRI="#Postgraduate_Student"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#followsUndergraduateProgrammeCourse"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#followsUndergraduateProgrammeCourse"/>
+            <Class IRI="#Undergraduate_Student"/>
+        </ObjectSomeValuesFrom>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#hasPostRecord"/>
+        <Class IRI="#Postgraduate_Student"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#hasRecord"/>
+        <Class IRI="#Student"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#hasUnderRecord"/>
+        <Class IRI="#Undergraduate_Student"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#isContainedInPostRecord"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#isContainedInPostRecord"/>
+            <Class IRI="#Postgraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#isContainedInPostRecord"/>
+        <ObjectMaxCardinality cardinality="2">
+            <ObjectProperty IRI="#isContainedInPostRecord"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectMaxCardinality>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#isContainedInUnderRecord"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#isContainedInUnderRecord"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#PostCourseMark"/>
+        <DataExactCardinality cardinality="1">
+            <DataProperty IRI="#PostMark"/>
+            <Datatype abbreviatedIRI="xsd:double"/>
+        </DataExactCardinality>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#UnderCourseMark"/>
+        <DataExactCardinality cardinality="1">
+            <DataProperty IRI="#UnderMark"/>
+            <Datatype abbreviatedIRI="xsd:double"/>
+        </DataExactCardinality>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#containsPostProgrammeCourses"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#containsPostProgrammeCourses"/>
+            <Class IRI="#Postgraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#containsPostProgrammeCourses"/>
+        <ObjectMaxCardinality cardinality="2">
+            <ObjectProperty IRI="#containsPostProgrammeCourses"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectMaxCardinality>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#containsUnderProgrammeCourses"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#containsUnderProgrammeCourses"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#followsPostgraduateProgrammeCourse"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#followsPostgraduateProgrammeCourse"/>
+            <Class IRI="#Postgraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#followsPostgraduateProgrammeCourse"/>
+        <ObjectMaxCardinality cardinality="2">
+            <ObjectProperty IRI="#followsPostgraduateProgrammeCourse"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectMaxCardinality>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#followsUndergraduateProgrammeCourse"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#followsUndergraduateProgrammeCourse"/>
+            <Class IRI="#Undergraduate_Course"/>
+        </ObjectSomeValuesFrom>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasPostRecord"/>
+        <ObjectExactCardinality cardinality="1">
+            <ObjectProperty IRI="#hasPostRecord"/>
+            <Class IRI="#PostgraduateRecord"/>
+        </ObjectExactCardinality>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasRecord"/>
+        <Class IRI="#Record"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasUnderRecord"/>
+        <ObjectExactCardinality cardinality="1">
+            <ObjectProperty IRI="#containsUnderProgrammeCourses"/>
+            <Class IRI="#UndergraduateRecord"/>
+        </ObjectExactCardinality>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#isContainedInPostRecord"/>
+        <Class IRI="#PostgraduateRecord"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#isContainedInUnderRecord"/>
+        <Class IRI="#UndergraduateRecord"/>
+    </ObjectPropertyRange>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#PostCourseMark</IRI>
+        <Literal>A postprogramme course and it&apos;s mark</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#PostgraduateRecord</IRI>
+        <Literal>PostGraduate_Record</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty IRI="#CoursesMark"/>
+        <IRI>#Postgraduate_Course</IRI>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#double"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Postgraduate_Programme</IRI>
+        <Literal>Postgraduate programme of the University</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Postgraduate_Programme</IRI>
+        <Literal>Postgraduate_Programme</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Postgraduate_Student</IRI>
+        <Literal>PostGraduate_Student</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#UnderCourseMark</IRI>
+        <Literal>a undergraduate programme course and it&apos;s mark</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#UndergraduateRecord</IRI>
+        <Literal>UnderGraduate_Record</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty IRI="#CoursesMark"/>
+        <IRI>#Undergraduate_Course</IRI>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#double"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Undergraduate_Programme</IRI>
+        <Literal>Undergraduate programme of the University</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Undergraduate_Programme</IRI>
+        <Literal>Undergraduate_Programme</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Undergraduate_Student</IRI>
+        <Literal>UnderGraduate_Student</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#containsPostProgrammeCourses</IRI>
+        <Literal>Record object and the postgraduate courses it contains</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#containsUnderProgrammeCourses</IRI>
+        <Literal>Record object and the undergraduate courses it contains</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#followsPostgraduateProgrammeCourse</IRI>
+        <Literal>Student object and the postgraduate courses s/he follows</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#followsUndergraduateProgrammeCourse</IRI>
+        <Literal>Student object and the undergraduate courses s/he follows</Literal>
+    </AnnotationAssertion>
+    <SubAnnotationPropertyOf>
+        <AnnotationProperty IRI="#containsCourse"/>
+        <AnnotationProperty abbreviatedIRI="owl:deprecated"/>
+    </SubAnnotationPropertyOf>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+

@@ -1,0 +1,921 @@
+PREFIXES
+
+PREFIX lgd:<http://linkedgeodata.org/triplify/>
+PREFIX lgdgeo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX lgdont:<http://linkedgeodata.org/ontology/>
+PREFIX geonames:<http://www.geonames.org/ontology#>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+PREFIX gag: <http://geo.linkedopendata.gr/greekadministrativeregion/ontology#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geor: <http://www.opengis.net/def/rule/geosparql/>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX class: <https://ai.di.uoa.gr/ontology/osm#>
+PREFIX uoa: <https://ai.di.uoa.gr/ontology#>
+
+
+1_a) ready
+
+SELECT  ?country ?division ?polygon WHERE{
+?s <https://ai.di.uoa.gr/ontology#hasNAME_1> ?country .
+?s <https://ai.di.uoa.gr/ontology#hasTYPE_2> ?division .
+?s <https://ai.di.uoa.gr/ontology#hasCOUNTRY> "United Kingdom"^^<http://www.w3.org/2001/XMLSchema#string> .
+?s <http://www.opengis.net/ont/geosparql#hasGeometry> [<http://www.opengis.net/ont/geosparql#asWKT> ?polygon] ;
+
+}
+
+1_b) ready
+
+SELECT  ?name ?polygon WHERE{
+?s class:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+?s class:hasTYPE_2 "Administrative County"^^<http://www.w3.org/2001/XMLSchema#string> .
+?s class:hasNAME_2 ?name .
+?s geo:hasGeometry [geo:asWKT ?polygon] ;
+
+}
+
+1_c) ready
+
+
+SELECT ?name ?division WHERE
+{
+  ?s class:hasENGTYPE_3 ?division .
+  {
+  SELECT ?s ?name WHERE{
+          ?s class:hasNAME_3 ?name .
+          ?s geo:hasGeometry ?geom .
+          ?geom geo:asWKT ?geom_poly .
+          FILTER(?name != "Southampton"^^<http://www.w3.org/2001/XMLSchema#string>)
+          ?s1 class:hasNAME_3 "Southampton"^^<http://www.w3.org/2001/XMLSchema#string> .
+          ?s1 geo:hasGeometry ?south_geom .
+          ?south_geom geo:asWKT ?south_geom_poly .
+          FILTER(strdf:touches(?geom_poly,?south_geom_poly)) .
+
+  }
+ }
+}GROUP BY ?name ?division
+
+
+
+1_d) ready
+
+SELECT (strdf:area(strdf:union(?geom_poly)) as ?area) WHERE { 
+  ?s geo:hasGeometry ?geom .
+  ?s class:hasCOUNTRY "Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?geom geo:asWKT ?geom_poly .
+}       
+
+
+1_e) ready
+
+SELECT (strdf:extent(?geom_poly) as ?min_bounding_box) WHERE{ 
+    ?s class:hasCOUNTRY "Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s geo:hasGeometry ?geom .
+    ?geom geo:asWKT ?geom_poly .
+
+}     
+
+
+1_f)  It works but with LIMIT (e.g LIMIT 2) because my pc is slow
+
+
+SELECT ?name ?division WHERE
+{
+  ?s class:hasNAME_1 ?name .
+  ?s class:hasTYPE_2 ?division .
+  {
+    SELECT ?s ?s1 ?geom_out ?geom_in WHERE 
+    {
+      ?s geo:hasGeometry [geo:asWKT ?geom_out ] .
+      ?s1 geo:hasGeometry [geo:asWKT ?geom_in ] .  
+      {
+        SELECT ?s ?s1 WHERE 
+        {
+           ?s class:hasCOUNTRY "United Kingdom"^^<http://www.w3.org/2001/XMLSchema#string> .
+           ?s class:hasNAME_1 ?name .
+           ?s1 class:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+           FILTER(?name != "England"^^<http://www.w3.org/2001/XMLSchema#string>) .
+        } 
+      }
+    }
+  }
+ FILTER(geof:touches(?geom_out, ?geom_in)) .
+} LIMIT 5               
+      
+
+
+SELECT ?name ?division WHERE
+{
+   ?s class:hasNAME_1 ?name .
+   ?s class:hasCOUNTRY "United Kingdom"^^<http://www.w3.org/2001/XMLSchema#string> .
+   ?s geo:hasGeometry ?geom .
+   ?s class:hasTYPE_2 ?division .
+   ?geom geo:asWKT ?geom_poly . 
+   ?s1 class:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+   ?s1 geo:hasGeometry ?geom_eng .
+   ?geom_eng geo:asWKT ?geom_eng_poly .
+   FILTER(strdf:touches(?geom_poly,?geom_eng_poly) && ?name != "England"^^<http://www.w3.org/2001/XMLSchema#string>) .
+} GROUP BY ?name ?division LIMIT 2  
+
+
+Το αποκάτω μάλλον είναι σωστότερο του αποπάνω
+
+
+SELECT ?name ?division_outside ?division_inside WHERE
+{
+   ?s class:hasNAME_1 ?name .
+   ?s class:hasCOUNTRY "United Kingdom"^^<http://www.w3.org/2001/XMLSchema#string> .
+   ?s geo:hasGeometry ?geom .
+   ?s class:hasTYPE_2 ?division_outside .
+   ?geom geo:asWKT ?geom_poly . 
+   ?s1 class:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+   ?s1 class:hasTYPE_2 ?division_inside .
+   ?s1 geo:hasGeometry ?geom_eng .
+   ?geom_eng geo:asWKT ?geom_eng_poly .
+   FILTER(strdf:touches(?geom_poly,?geom_eng_poly) && ?name != "England"^^<http://www.w3.org/2001/XMLSchema#string>) .
+} GROUP BY ?name ?division_outside ?division_inside LIMIT 2        
+
+
+
+API KEY: AIzaSyBwrYkKr9ZjIZfScJDWLuHv1iMbyOVsylU
+
+2_a) 
+
+PREFIX lgd:<http://linkedgeodata.org/triplify/>
+PREFIX lgdgeo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX lgdont:<http://linkedgeodata.org/ontology/>
+PREFIX geonames:<http://www.geonames.org/ontology#>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+PREFIX gag: <http://geo.linkedopendata.gr/greekadministrativeregion/ontology#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geor: <http://www.opengis.net/def/rule/geosparql/>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX class: <https://ai.di.uoa.gr/ontology/osm#>
+PREFIX uoa: <https://ai.di.uoa.gr/ontology#>
+
+
+SELECT ?hotel_geom_poly WHERE{
+  ?s class:hasFclass "hotel"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s geo:hasGeometry ?hotel_geom .
+  ?hotel_geom geo:asWKT ?hotel_geom_poly .
+
+}
+
+2_b)
+
+Του Νίκου είναι το απο κάτω:
+SELECT ?riverName ?type (SUM(strdf:area(?polygon)) as ?riverArea) ?polygon
+WHERE
+{
+    ?s ai:hasFclass ?type .
+    ?s ai:hasName ?riverName .
+    ?s geo:hasGeometry [ geo:asWKT ?polygon ] .
+    FILTER( (str(?type) = "riverbank"^^xsd:string) && (REGEX(str(?riverName),"River"^^xsd:string)) )
+} GROUP BY ?riverName ?type ORDER BY DESC(?riverArea) LIMIT 5
+
+SELECT ?river_geom WHERE{
+  ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s geo:hasGeometry ?river .
+  ?river geo:asWKT ?river_geom .
+
+} LIMIT 5
+
+SELECT (strdf:area(?river_geom) as ?area) WHERE{
+  ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s geo:hasGeometry ?river .
+  ?river geo:asWKT ?river_geom .
+
+} ORDER BY DESC(?area) LIMIT 5
+
+ALMOST:
+
+SELECT ?s (strdf:area(strdf:intersection(?river_geom)) as ?area) ?river_geom WHERE{
+  ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s geo:hasGeometry ?river .
+  ?river geo:asWKT ?river_geom .
+
+} GROUP BY ?s ?river_geom ORDER BY DESC(?area) LIMIT 5
+
+
+SELECT ?river_name ?river_geo WHERE{
+  ?s class:hasName ?river_name .
+  ?s geo:hasGeometry ?river_geo .
+  ?river_geo geo:asWKT ?river_geo_poly .
+  FILTER(regex(?river_name, "River"))
+
+} GROUP BY ?river_name ?river_geo
+
+
+----------------------------------------------------
+
+SELECT ?s (strdf:area(strdf:union(?river_geom)) as ?area) ?river_geom WHERE{
+  ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s class:hasName ?river_name .
+  ?s geo:hasGeometry ?river .
+  ?river geo:asWKT ?river_geom .
+
+} GROUP BY ?s ?river_geom ORDER BY DESC(?area) LIMIT 5
+
+
+--------------------------------------------------------
+
+
+SELECT ?river_name WHERE{
+  ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s class:hasName ?river_name .
+  ?s geo:hasGeometry ?river .
+  ?river geo:asWKT ?river_geom . FILTER(regex(?river_name, "River")) . 
+  ?s1 class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 class:hasName ?river_name1 .
+  ?s1 geo:hasGeometry ?river1 .
+  ?river1 geo:asWKT ?river_geom1 . FILTER(?river_name1 = ?river_name && strdf:intersects(?river_geom1, ?river_geom)) .  
+
+} GROUP BY ?river_name ?river_geom
+
+____________________________________________________________
+funny result
+
+SELECT ?river_name (strdf:extent(?river_geo_poly) as ?total) WHERE{
+  ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s class:hasName ?river_name .
+  ?s geo:hasGeometry ?river_geo .
+  ?river_geo geo:asWKT ?river_geo_poly .
+  FILTER(regex(?river_name, "River"))
+  
+
+} GROUP BY ?river_name ?river_geo_poly LIMIT 1
+
+
+
+2_c)
+Και οι δύο λύσεις δεν φαίνεται να τερματίζουν
+1η λύση 
+
+
+
+SELECT ?name ?hot_name WHERE
+{
+  ?s class:hasFclass "hospital"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s class:hasName ?name . FILTER(regex(?name, "Hospital")) .
+  ?s geo:hasGeometry ?geo_hosp_var .
+  ?geo_hosp_var geo:asWKT ?hosp_poly .
+  ?s1 class:hasFclass "hotel"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 class:hasName ?hot_name . FILTER(regex(?hot_name, "Hotel")) .
+  ?s1 geo:hasGeometry ?geo_hot_var .
+  ?geo_hot_var geo:asWKT ?hot_poly . 
+  FILTER((geof:distance(?hosp_poly, ?hot_poly, uom:metre) < 3000))
+
+} LIMIT 5
+
+______________________________________________________________
+
+2η λύση 
+
+SELECT ?hosp_poly ?hot_poly WHERE
+{
+  ?s class:hasFclass "hospital"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s class:hasName ?name . FILTER(regex(?name, "Hospital")) .
+  ?s geo:hasGeometry ?geo_hosp_var .
+  ?geo_hosp_var geo:asWKT ?hosp_poly .
+  ?s1 class:hasFclass "hotel"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 class:hasName ?hot_name . FILTER(regex(?hot_name, "Hotel")) .
+  ?s1 geo:hasGeometry ?geo_hot_var .
+  ?geo_hot_var geo:asWKT ?hot_poly . 
+  FILTER(geof:within(?hosp_poly, geof:buffer(?hot_poly, 3000, uom:metre)))
+} LIMIT 5
+
+
+
+2_d)
+
+
+SELECT ?library_name WHERE
+{
+  ?s class:hasFclass "library"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s class:hasName ?library_name .
+  ?s geo:hasGeometry [ geo:asWKT ?lib_geo ] .
+  ?s1 class:hasFclass "university"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 geo:hasGeometry [ geo:asWKT ?uni_geo ] .
+  FILTER(geof:distance(?lib_geo, ?uni_geo, uom:metre) < 2000) .
+
+} LIMIT 5
+
+
+
+3_a)
+
+            
+SELECT ?river_name WHERE
+{
+  ?s class:hasNAME_2 "Greater London"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s geo:hasGeometry [ geo:asWKT ?lond_geom ] .
+  ?s1 class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 class:hasName ?river_name . FILTER(regex(?river_name, "River")) .
+  ?s1 geo:hasGeometry [ geo:asWKT ?river_geom ] .
+  FILTER(strdf:crosses(?river_geom, ?lond_geom))
+}
+
+
+2nd_solution
+
+
+SELECT ?river_name WHERE
+{
+
+  ?s1 class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 class:hasName ?river_name . FILTER(regex(?river_name, "River")) .
+  ?s1 geo:hasGeometry [ geo:asWKT ?river_geom ] .
+  
+  {
+    SELECT (strdf:union(?geom) AS ?lond_geom) WHERE
+    {
+      ?s class:hasNAME_2 "Greater London"^^<http://www.w3.org/2001/XMLSchema#string> .
+      ?s geo:hasGeometry [ geo:asWKT ?geom] .
+    }
+
+   }
+   FILTER(strdf:intersects(?river_geom, ?lond_geom)) .
+ 
+}        
+            
+
+
+3rd_solution
+
+SELECT ?river_name WHERE 
+{ 
+  {
+  SELECT (strdf:union(?geom) AS ?total_london_geom) ?river_name ?total_river_geom WHERE
+  {
+    ?s class:hasNAME_2 "Greater London"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s geo:hasGeometry [ geo:asWKT ?geom] .
+  { 
+   SELECT (strdf:union(?river_geom) AS ?total_river_geom) ?river_name WHERE
+   {
+
+      ?s1 class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+      ?s1 class:hasName ?river_name . FILTER(regex(?river_name, "River")) .
+      ?s1 geo:hasGeometry [ geo:asWKT ?river_geom ] .
+
+   } GROUP BY ?river_name ?river_geom
+  }
+ }
+ }
+ FILTER(strdf:crosses(?total_london_geom, ?total_river_geom))
+
+}
+
+3_b)
+SELECT DISTINCT ?name WHERE
+{
+  ?s class:hasFclass "theatre"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s geo:hasGeometry [ geo:asWKT ?theatre_geom] .
+  ?s1 gadm:hasNAME_2 "Greater London"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 gadm:hasNAME_3 ?name .
+  ?s1 geo:hasGeometry [ geo:asWKT ?lond_count_geom] .
+  FILTER(strdf:within(?theatre_geom, ?lond_count_geom))
+
+} LIMIT 10
+
+
+3_c)
+
+SELECT ?park_name ?museum_name WHERE 
+{ 
+  ?s class:hasFclass "park"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s class:hasName ?park_name .
+  ?s geo:hasGeometry [ geo:asWKT ?park_geom] .
+  ?s1 class:hasFclass "museum"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 class:hasName ?museum_name .
+  ?s1 geo:hasGeometry [ geo:asWKT ?museum_geom] .
+  FILTER(strdf:within(?museum_geom, ?park_geom))
+} LIMIT 2
+
+3_d)
+
+
+SELECT ?river_name WHERE
+{ 
+  ?s class:hasFclass ?s_class .
+  ?s class:hasName ?river_name .
+  ?s geo:hasGeometry [ geo:asWKT ?river_geom] .
+  ?s1 uoa:hasNAME_1 "Scotland"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 geo:hasGeometry [ geo:asWKT ?scot_adm_unit_geom] .
+  FILTER(REGEX(str(?river_name), "River") && (REGEX(str(?s_class), "riverbank") || REGEX(str(?s_class), "water")) && strdf:within(?river_geom, ?scot_adm_unit_geom)) .
+
+} GROUP BY ?river_name
+--------------------------------------------------
+
+
+SELECT ?river_name WHERE
+{
+  ?s1 uoa:hasNAME_1 "Scotland"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s1 uoa:hasTYPE_3 ?adm_div .
+  ?s1 geo:hasGeometry [geo:asWKT ?adm_unit_geom] .
+ 
+  {
+   SELECT ?river_name ?river_geom WHERE
+   { 
+     ?s class:hasFclass ?s_class .
+     ?s class:hasName ?river_name .
+     ?s geo:hasGeometry [ geo:asWKT ?river_geom] .
+     FILTER((REGEX(str(?s_class), "riverbank") || REGEX(str(?s_class), "water")) && (REGEX(str(?river_name), "River"))) .
+
+   } GROUP BY ?river_name ?river_geom
+  }
+  FILTER(strdf:within(?river_geom, ?adm_unit_geom))
+}
+            
+-------------------------------------------------------
+
+SELECT ?river_name ?adm_unit_geom WHERE
+{
+  {
+    SELECT ?adm_unit_geom WHERE
+    {
+     ?s1 uoa:hasNAME_1 "Scotland"^^<http://www.w3.org/2001/XMLSchema#string> .
+     ?s1 uoa:hasTYPE_3 ?adm_div .
+     ?s1 geo:hasGeometry [geo:asWKT ?adm_unit_geom] .
+    }
+  }
+
+  {
+    SELECT ?river_name ?river_geom WHERE
+    { 
+      ?s class:hasFclass ?s_class .
+      ?s class:hasName ?river_name .
+      ?s geo:hasGeometry [ geo:asWKT ?river_geom] .
+      FILTER((REGEX(str(?s_class), "riverbank") || REGEX(str(?s_class), "water")) && (REGEX(str(?river_name), "River"))) .
+    }
+  }
+ FILTER(strdf:within(?river_geom, ?adm_unit_geom))
+} LIMIT 10   
+    
+________________________________________________________________
+
+SELECT ?river_name ?adm_unit_geom WHERE
+{
+
+     ?s1 uoa:hasNAME_1 "Scotland"^^<http://www.w3.org/2001/XMLSchema#string> .
+     ?s1 uoa:hasTYPE_3 ?adm_div .
+     ?s1 geo:hasGeometry [geo:asWKT ?adm_unit_geom] .
+     ?s class:hasFclass ?s_class .
+     ?s class:hasName ?river_name .
+     ?s geo:hasGeometry [ geo:asWKT ?river_geom] .
+     FILTER((REGEX(str(?s_class), "riverbank") || REGEX(str(?s_class), "water")) && (REGEX(str(?river_name), "River"))) .
+ FILTER(strdf:within(?river_geom, ?adm_unit_geom))
+} LIMIT 10       
+
+
+___________________________________________________________________
+
+3_e)  Από εδώ και πέρα έχω κατατάξει όσα δεν τερματίζουν (κάνουν πολύ ώρα) από το πιο σωστό ως το λιγότερο σωστό
+
+SELECT DISTINCT ?river_name WHERE
+{
+       ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s class:hasName ?river_name . 
+       ?s geo:hasGeometry ?geo_uri .
+       ?geo_uri geo:asWKT ?river_geom .
+       ?s1 uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s1 uoa:hasTYPE_2 ?adm_type .
+       ?s1 geo:hasGeometry [ geo:asWKT ?adm_geom_1] .
+       ?s2 uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s2 uoa:hasTYPE_2 ?adm_type_2 .
+       ?s2 geo:hasGeometry [ geo:asWKT ?adm_geom_2] .
+       FILTER(REGEX(str(?river_name), "River") && REGEX(str(?geo_uri), "england") && strdf:crosses(?river_geom, ?adm_geom_2) && strdf:crosses(?river_geom, ?adm_geom_1) && ?s1 != ?s2)
+
+}   
+
+_________________________________________________________________________________________
+
+SELECT ?river_name (strdf:union(?river_geom) AS ?total_river_geom) WHERE
+{
+       ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s class:hasName ?river_name . 
+       ?s geo:hasGeometry ?geo_uri .
+       ?geo_uri geo:asWKT ?river_geom .
+       ?s1 uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s1 uoa:hasTYPE_2 ?adm_type .
+       ?s1 geo:hasGeometry [ geo:asWKT ?adm_geom_1] .
+       ?s2 uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s2 uoa:hasTYPE_2 ?adm_type_2 .
+       ?s2 geo:hasGeometry [ geo:asWKT ?adm_geom_2] .
+       FILTER(REGEX(str(?river_name), "River") && REGEX(str(?geo_uri), "england") && (strdf:crosses(?total_river_geom, ?adm_geom_2)) && (strdf:crosses(?total_river_geom, ?adm_geom_1)) && (?s1 != ?s2))
+
+} GROUP BY ?river_name ?river_geom LIMIT 10    
+
+
+___________________________________________________________________________
+
+SELECT DISTINCT ?river_name (strdf:union(?river_geom) AS ?total_river_geom) WHERE
+{
+       ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s class:hasName ?river_name . 
+       ?s geo:hasGeometry ?geo_uri .
+       ?geo_uri geo:asWKT ?river_geom .
+       ?s1 uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s1 uoa:hasTYPE_2 ?adm_type .
+       ?s1 geo:hasGeometry [ geo:asWKT ?adm_geom_1] .
+       ?s2 uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s2 uoa:hasTYPE_2 ?adm_type_2 .
+       ?s2 geo:hasGeometry [ geo:asWKT ?adm_geom_2] .
+       FILTER(REGEX(str(?river_name), "River") && REGEX(str(?geo_uri), "england") && strdf:crosses(?total_river_geom, ?adm_geom_2) && strdf:crosses(?river_geom, ?adm_geom_1) && ?s1 != ?s2)
+
+} GROUP BY ?river_name ?river_geom
+
+
+
+
+________________________________________________________________________
+SELECT ?river_name WHERE 
+{
+   {
+     SELECT ?adm_geom_1  ?adm_geom_2 WHERE
+     {
+       ?s1 uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s1 uoa:hasTYPE_2 ?adm_type .
+       ?s1 geo:hasGeometry [ geo:asWKT ?adm_geom_1] .
+       ?s2 uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s2 uoa:hasTYPE_2 ?adm_type_2 .
+       ?s2 geo:hasGeometry [ geo:asWKT ?adm_geom_2] .
+       FILTER(?s1 != ?s2)
+     }
+   }
+
+   {
+     SELECT ?river_name (strdf:union(?river_geom) AS ?total_river_geom) WHERE
+     {
+       ?s class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+       ?s class:hasName ?river_name . 
+       ?s geo:hasGeometry [ geo:asWKT ?river_geom] .
+       FILTER(REGEX(str(?river_name), "River"))
+     } GROUP BY ?river_name ?river_geom      
+   }
+
+  FILTER(strdf:crosses(?total_river_geom, ?adm_geom_1) && strdf:crosses(?total_river_geom, ?adm_geom_2))
+}
+
+
+
+_______________________________________________________________________________
+
+3f)
+
+
+SELECT ?river_name WHERE
+{
+ { 
+
+  SELECT ?river_name (strdf:union(?river_geom) AS ?total_river_geom) WHERE
+  {
+      ?r class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+      ?r class:hasName ?river_name .
+      ?r geo:hasGeometry [ geo:asWKT ?river_geom] .
+      FILTER(REGEX(str(?river_name), "River")) .
+  } GROUP BY ?river_name ?river_geom 
+ } 
+ {
+  SELECT (strdf:union(?eng_poly) AS ?england) ?scotland ?wales ?ireland WHERE
+  {
+    ?s uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s geo:hasGeometry [ geo:asWKT ?eng_poly] .
+    ?s1 uoa:hasNAME_1 "Scotland"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s1 uoa:hasENGTYPE_1 "Constituent Country"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s1 geo:hasGeometry [ geo:asWKT ?scotland] .
+    ?s2 uoa:hasNAME_1 "Wales"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s2 uoa:hasENGTYPE_1 "Constituent Country"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s2 geo:hasGeometry [ geo:asWKT ?wales] .
+    ?s3 uoa:hasNAME_1 "Northern Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s3 uoa:hasENGTYPE_1 "Constituent Country"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s3 geo:hasGeometry [ geo:asWKT ?ireland] .
+  }
+ }
+ FILTER((strdf:intersects(?total_river_geom, ?england) && strdf:intersects(?total_river_geom, ?wales)) ||
+       (strdf:intersects(?total_river_geom, ?england) && strdf:intersects(?total_river_geom, ?scotland)) || 
+       (strdf:intersects(?total_river_geom, ?england) && strdf:intersects(?total_river_geom, ?ireland)) || 
+       (strdf:intersects(?total_river_geom, ?wales) && strdf:intersects(?total_river_geom, ?scotland)) ||
+       (strdf:intersects(?total_river_geom, ?wales) && strdf:intersects(?total_river_geom, ?ireland)) || 
+       (strdf:intersects(?total_river_geom, ?scotland) && strdf:intersects(?total_river_geom, ?ireland)))
+}
+
+__________________________________________________________
+
+
+
+
+SELECT ?river_name ?scot_river_name ?wales_river_name ?ireland_river_name WHERE
+{
+
+{ 
+
+  SELECT ?river_name ?check WHERE 
+ { 
+  {
+    SELECT ?river_name (strdf:intersects(strdf:envelope(?river_geom), strdf:envelope(?eng_poly)) AS ?check) WHERE
+    {
+     {
+      SELECT ?river_name ?river_geom WHERE
+      {
+  	  ?r class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  	  ?r class:hasName ?river_name .
+  	  ?r geo:hasGeometry [ geo:asWKT ?river_geom] .
+  	  FILTER(REGEX(str(?river_name), "River")) .
+      }
+     }
+     {
+      SELECT ?eng_poly WHERE
+      {
+	  ?s uoa:hasNAME_1 "England"^^<http://www.w3.org/2001/XMLSchema#string> .
+	  ?s geo:hasGeometry [ geo:asWKT ?eng_poly] .
+      }
+     }
+    } LIMIT 2000
+  }
+  
+ } LIMIT 2000
+ 
+} # end of first nested query (england)
+
+  # start of second nested query (scotland)
+{
+  SELECT ?scot_river_name ?check_2 WHERE
+ { 
+  {
+    SELECT ?scot_river_name (strdf:intersects(strdf:envelope(?scot_riv_geom), strdf:envelope(?scotland)) AS ?check_2) WHERE
+    {
+     {
+      SELECT ?scot_river_name ?scot_riv_geom WHERE
+      {
+  	  ?r class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  	  ?r class:hasName ?scot_river_name .
+  	  ?r geo:hasGeometry [ geo:asWKT ?scot_riv_geom] .
+  	  FILTER(REGEX(str(?scot_river_name), "River")) .
+      }
+     }
+     {
+      SELECT ?scotland WHERE
+      {
+	  ?s uoa:hasNAME_1 "Scotland"^^<http://www.w3.org/2001/XMLSchema#string> .
+	  ?s geo:hasGeometry [ geo:asWKT ?scotland] .
+      }
+     }
+    } LIMIT 2000
+   
+  }
+    
+   } LIMIT 2000
+  } # end of second nested query (scotland)
+ 
+ 
+  # start of third nested query (wales)
+{
+  SELECT ?wales_river_name ?check_3 WHERE
+ { 
+  {
+    SELECT ?wales_river_name (strdf:intersects(strdf:envelope(?wales_riv_geom), strdf:envelope(?wales)) AS ?check_3) WHERE
+    {
+     {
+      SELECT ?wales_river_name ?wales_riv_geom WHERE
+      {
+  	  ?r class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  	  ?r class:hasName ?wales_river_name .
+  	  ?r geo:hasGeometry [ geo:asWKT ?wales_riv_geom] .
+  	  FILTER(REGEX(str(?wales_river_name), "River")) .
+      }
+     }
+     {
+      SELECT ?wales WHERE
+      {
+	  ?s uoa:hasNAME_1 "Wales"^^<http://www.w3.org/2001/XMLSchema#string> .
+	  ?s geo:hasGeometry [ geo:asWKT ?wales] .
+      }
+     }
+    } LIMIT 2000
+   
+  }
+    
+   } LIMIT 2000
+  } # end of third nested query (wales)
+
+  # start of fourth nested query (ireland)
+{
+  SELECT ?ireland_river_name ?check_4 WHERE
+ { 
+  {
+    SELECT ?ireland_river_name (strdf:intersects(strdf:envelope(?ireland_riv_geom), strdf:envelope(?ireland)) AS ?check_4) WHERE
+    {
+     {
+      SELECT ?ireland_river_name ?ireland_riv_geom WHERE
+      {
+  	  ?r class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+  	  ?r class:hasName ?ireland_river_name .
+  	  ?r geo:hasGeometry [ geo:asWKT ?ireland_riv_geom] .
+  	  FILTER(REGEX(str(?ireland_river_name), "River")) .
+      }
+     }
+     {
+      SELECT ?ireland WHERE
+      {
+	  ?s uoa:hasNAME_1 "Northern Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+	  ?s geo:hasGeometry [ geo:asWKT ?ireland] .
+      }
+     }
+    } LIMIT 2000
+   
+  }
+    
+   } LIMIT 2000
+  } # end of fourth nested query (ireland)
+
+ FILTER( (?river_name = ?scot_river_name) || (?river_name = ?wales_river_name) || (?wales_river_name = ?scot_river_name) || (?river_name = ?ireland_river_name) || (?ireland_river_name = ?wales_river_name) || (?ireland_river_name = ?scotland_river_name))
+ 
+ 
+} LIMIT 1
+______________________________________________________________________________
+
+3g)
+
+
+SELECT ?town (COUNT(?school_geom) AS ?total_schools) WHERE
+{
+  ?s uoa:hasNAME_2 ?town .
+  ?s uoa:hasENGTYPE_3 "Unitary authority (Wales)"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s geo:hasGeometry [ geo:asWKT ?town_geom] .
+  ?r class:hasFclass "school"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?r geo:hasGeometry [ geo:asWKT ?school_geom] .
+  FILTER(strdf:within(?school_geom, ?town_geom))
+} GROUP BY ?town
+
+
+
+SELECT ?town  WHERE
+{
+
+  ?s uoa:hasNAME_1 "Wales"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s uoa:hasNAME_2 ?town .
+  ?s uoa:hasTYPE_2 ?authority .
+  ?s geo:hasGeometry [ geo:asWKT ?town_geom] .
+ {
+  SELECT ?school_geom WHERE
+   {
+    ?r class:hasFclass "school"^^<http://www.w3.org/2001/XMLSchema#string> .
+    FILTER(REGEX(str(?r), "wales")) .
+    ?r geo:hasGeometry [ geo:asWKT ?school_geom] .
+   } LIMIT 1000
+  }
+  FILTER(strdf:within(strdf:envelope(?school_geom), strdf:envelope(?town_geom)))
+} GROUP BY ?town LIMIT 10
+
+______________________________________________________________________________
+
+3h)
+
+SELECT ?district_name (COUNT(?s2) AS ?neighbor_districts) WHERE
+{
+  ?s uoa:hasNAME_1 "Northern Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s uoa:hasTYPE_2 "District"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s uoa:hasNAME_2 ?district_name .
+  ?s geo:hasGeometry [ geo:asWKT ?dist_geom] .
+  ?s2 uoa:hasNAME_1 "Northern Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s2 uoa:hasTYPE_2 "District"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s2 uoa:hasNAME_2 ?district_name_2 .
+  ?s2 geo:hasGeometry [ geo:asWKT ?dist_geom_2] .
+  FILTER(strdf:touches(?dist_geom, ?dist_geom_2) && ?s != ?s2) 
+}  GROUP BY ?district_name ORDER BY ?neighbor_districts
+
+___________________________________________________________________________
+
+3i)
+
+SELECT ?country ?total_riv_area WHERE
+{
+ {
+  SELECT ("Ireland" AS ?country) (SUM(strdf:area(?riv_ir_geom)) AS ?total_riv_area) WHERE
+  {
+  
+    ?s uoa:hasCOUNTRY "Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s geo:hasGeometry [ geo:asWKT ?ir_geom] .
+    ?r_i class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?r_i class:hasName ?ir_river .
+    ?r_i geo:hasGeometry [ geo:asWKT ?riv_ir_geom] .
+    FILTER(REGEX(str(?ir_river), "River")) .
+    FILTER(strdf:within(?riv_ir_geom, ?ir_geom))
+  }
+ }
+ UNION
+ {
+  SELECT ("GBT" AS ?country) (SUM(strdf:area(?riv_brit_geom)) AS ?total_riv_area) WHERE
+  {
+    ?s1 uoa:hasCOUNTRY "United Kingdom"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s1 geo:hasGeometry [ geo:asWKT ?brit_geom] .
+    ?b_i class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?b_i class:hasName ?brit_river .
+    ?b_i geo:hasGeometry [ geo:asWKT ?riv_brit_geom] .
+    FILTER(REGEX(str(?brit_river), "River")) .
+    FILTER(strdf:within(?riv_brit_geom, ?brit_geom))
+  }
+ }
+} ORDER BY DESC(?total_riv_area) LIMIT 1
+
+_____________________________________________________________________________________
+
+SELECT ("Ireland" AS ?country) (SUM(strdf:area(?riv_ir_geom)) AS ?total_riv_area) WHERE
+{
+   {
+    SELECT ?riv_ir_geom ((strdf:within(?riv_ir_geom, ?ir_geom)) AS ?check) WHERE 
+    {  
+    
+      ?s uoa:hasCOUNTRY "Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+      ?s geo:hasGeometry [ geo:asWKT ?ir_geom] .
+      ?r_i class:hasFclass "riverbank"^^<http://www.w3.org/2001/XMLSchema#string> .
+      ?r_i class:hasName ?ir_river .
+      ?r_i geo:hasGeometry [ geo:asWKT ?riv_ir_geom] .
+      FILTER(REGEX(str(?ir_river), "River")) .
+    } 
+  }
+} GROUP BY ?country
+_______________________________________________________________________________________
+
+3j)
+
+
+SELECT ?castle_name (strdf:area(?castle_poly) AS ?area) WHERE
+{
+  ?s uoa:hasTYPE_1 "Constituent Country"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s uoa:hasNAME_1 "Northern Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?s geo:hasGeometry [ geo:asWKT ?north_poly] .
+  ?c class:hasFclass "castle"^^<http://www.w3.org/2001/XMLSchema#string> .
+  ?c class:hasName ?castle_name .
+  ?c geo:hasGeometry [ geo:asWKT ?castle_poly] .
+  FILTER(strdf:within(?castle_poly, ?north_poly)) .
+} ORDER BY DESC(?area) LIMIT 1
+
+
+
+______
+
+SELECT ?castles_dist_name WHERE
+{ 
+ ?i uoa:hasNAME_1 "Northern Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+ ?i uoa:hasNAME_2 ?castles_dist_name .
+ ?i geo:hasGeometry [ geo:asWKT ?castles_dist_poly] .
+ { SELECT ?castle_name (strdf:area(?castle_poly) AS ?area) ?castle_poly WHERE
+  {
+    ?s uoa:hasTYPE_1 "Constituent Country"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s uoa:hasNAME_1 "Northern Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?s geo:hasGeometry [ geo:asWKT ?north_poly] .
+    ?c class:hasFclass "castle"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?c class:hasName ?castle_name .
+    ?c geo:hasGeometry [ geo:asWKT ?castle_poly] .
+    FILTER(strdf:within(?castle_poly, ?north_poly)) .
+  } ORDER BY DESC(?area) LIMIT 1
+ }
+ FILTER(strdf:within(?castle_poly, ?castles_dist_poly))
+}
+
+
+______
+
+
+
+
+SELECT ?neighbor_name WHERE
+{
+
+ {
+  SELECT ?neighbor_name ?neighbor WHERE
+  {
+    ?j uoa:hasNAME_1 "Northern Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?j uoa:hasNAME_2 ?neighbor_name .
+    ?j geo:hasGeometry [ geo:asWKT ?neighbor] .
+  }
+ }
+
+ {
+  SELECT ?castle_name (strdf:area(?castle_poly) AS ?area) ?castle_poly ?castles_dist_name ?castles_dist_poly WHERE
+  { 
+   ?i uoa:hasNAME_1 "Northern Ireland"^^<http://www.w3.org/2001/XMLSchema#string> .
+   ?i uoa:hasNAME_2 ?castles_dist_name .
+   ?i geo:hasGeometry [ geo:asWKT ?castles_dist_poly] .
+   ?c class:hasFclass "castle"^^<http://www.w3.org/2001/XMLSchema#string> .
+   ?c class:hasName ?castle_name .
+   ?c geo:hasGeometry [ geo:asWKT ?castle_poly] .
+   FILTER(strdf:within(?castle_poly, ?castles_dist_poly)) .
+   } ORDER BY DESC(?area) LIMIT 1
+  }
+  FILTER(strdf:touches(?neighbor, ?castles_dist_poly))
+}  
+
+
+
+

@@ -1,0 +1,240 @@
+body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+
+.w3-row-padding img {margin-bottom: 12px}
+
+.bgimg {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('LinkedInPhoto_2.jpg');
+  min-height: 100%;
+  filter: grayscale(100%);
+}
+
+#mySVG, #mySVG_2, #mySVG_3{
+  width: 80pt;
+  height: 80pt;
+  margin: 2% auto;
+  display: inline;
+}
+
+
+div.jumbotron {
+  text-align: center;
+}
+
+ul.myUL{
+  display: inline-block;
+  text-align: left;
+}
+
+.box_svg{
+  width: 150px;
+  heigh:150px;
+}
+
+
+.first{
+  fill-opacity: 0;
+  stroke: #000;
+  stroke-width: 50px;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 50000;
+  animation: first 10s ease-in-out;
+}
+
+
+@keyframes first{
+
+  0%{
+    stroke-dashoffset: 50000;
+  }
+  100%{
+    stroke-dashoffset: 0;
+  }
+}
+
+.second{
+  fill-opacity: 0;
+  stroke: #000;
+  stroke-width: 50px;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 50000;
+  animation: second 10s ease-in-out;
+}
+
+
+@keyframes second{
+
+  0%{
+    stroke-dashoffset: 50000;
+  }
+  100%{
+    stroke-dashoffset: 0;
+  }
+}
+
+.third{
+  fill-opacity: 0;
+  stroke: #000;
+  stroke-width: 50px;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 50000;
+  animation: third 10s ease-in-out;
+}
+
+
+@keyframes third{
+
+  0%{
+    stroke-dashoffset: 50000;
+  }
+  100%{
+    stroke-dashoffset: 0;
+  }
+}
+
+
+.fourth{
+  fill-opacity: 0;
+  stroke: #000;
+  stroke-width: 50px;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 50000;
+  animation: fourth 10s ease-in-out;
+}
+
+
+@keyframes fourth{
+
+  0%{
+    stroke-dashoffset: 50000;
+  }
+  100%{
+    stroke-dashoffset: 0;
+  }
+}
+
+
+.fifth{
+  fill-opacity: 0;
+  stroke: #000;
+  stroke-width: 50px;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 50000;
+  animation: fifth 10s ease-in-out;
+}
+
+
+@keyframes fifth{
+
+  0%{
+    stroke-dashoffset: 50000;
+  }
+  100%{
+    stroke-dashoffset: 0;
+  }
+}
+
+
+
+.mySVG_2_class{
+  fill-opacity: 0;
+  stroke: #000;
+  stroke-width: 3px;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 1000;
+  animation: mySVG_2_class 20s ease-in-out;
+}
+
+
+@keyframes mySVG_2_class{
+
+  0%{
+    stroke-dashoffset: 1000;
+  }
+  100%{
+    stroke-dashoffset: 0;
+  }
+}
+
+
+.mySVG_3_class{
+  fill-opacity: 0;
+  stroke: #000;
+  stroke-width: 1px;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 1000;
+  animation: mySVG_3_class 40s ease-in-out;
+}
+
+
+@keyframes mySVG_3_class{
+
+  0%{
+    stroke-dashoffset: 1000;
+  }
+  100%{
+    stroke-dashoffset: 0;
+  }
+}
+
+
+.hid_1{
+  color:black;
+  display: none;
+}
+
+
+.hid_2 {
+  color:black;
+  display: none;
+}
+
+
+.hid_3{
+  color:black;
+  display: none;
+}
+
+
+.linkedIn_prof{
+  color:black;
+}
+
+.linkedIn_prof:hover {
+  color: gray;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.github_prof{
+  color:black;
+}
+
+.github_prof:hover {
+  color: gray;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.homepage{
+  color:black;
+}
+
+.homepage:hover {
+  color: gray;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: gray;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+
+.box_svg, .box_svg_2, .box_svg_3{
+  cursor: pointer;
+}

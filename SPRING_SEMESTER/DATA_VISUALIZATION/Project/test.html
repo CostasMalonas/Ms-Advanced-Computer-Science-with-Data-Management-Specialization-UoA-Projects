@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Grafana Panels</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #181818;
+      color: #dcdcdc;
+      font-family: Arial, sans-serif;
+    }
+
+    .panel-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    
+    .panel-iframe {
+      border: none;
+      width: 48%;
+      height: 500px; /* Adjust the height as needed */
+    }
+
+    .dummy-title {
+      font-size: 24px;
+      font-weight: bold;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="dummy-title">Dummy Title</div>
+    <div class="panel-container">
+      <iframe class="panel-iframe" src="http://2.84.134.99:3000/d/TXSTREZ/simple-streaming-example?orgId=1&viewPanel=4&kiosk&refresh=5s"></iframe>
+      <iframe class="panel-iframe" src="http://2.84.134.99:3000/d/TXSTREZ/simple-streaming-example?orgId=1&viewPanel=2&kiosk&refresh=5s"></iframe>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.5.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
