@@ -56,6 +56,5 @@ This project introduces a **Voice-Controlled Mouse Navigation System**, allowing
 
 ## Navigate to the directory containing the program.
 **Execute the application by running the main.py script**:
--- bash
--- Copy code
--- python main.py
+bash
+python main.py
