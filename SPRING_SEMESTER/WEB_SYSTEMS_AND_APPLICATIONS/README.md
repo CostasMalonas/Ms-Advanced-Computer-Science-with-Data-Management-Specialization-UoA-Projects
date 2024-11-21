@@ -43,7 +43,7 @@ This tool stands out by emphasizing the **calculation of review quality scores**
 ## **Usage Instructions**
 1. **Install Dependencies**:
    Ensure you have Python installed, then install the required dependencies:
-**bash**
+  **bash**
    - pip install selenium beautifulsoup4 pandas
 
 Set Up ChromeDriver:
