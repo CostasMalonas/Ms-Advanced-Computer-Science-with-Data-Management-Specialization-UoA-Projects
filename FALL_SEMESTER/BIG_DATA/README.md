@@ -1,6 +1,6 @@
-﻿# ** KEY VALUE STORE WITH TRIE STRUCTURE **
+﻿# KEY VALUE STORE WITH TRIE STRUCTURE
 
-## ** 1. First create data with the following command **:
+## 1. First create data with the following command:
 
 
 - python genData.py [-k K] [-n N] [-d D] [-l L] [-m M]
