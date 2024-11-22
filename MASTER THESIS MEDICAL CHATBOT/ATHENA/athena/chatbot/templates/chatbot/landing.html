@@ -1,0 +1,13 @@
+{% extends "chatbot/base.html" %}
+
+{% block title %}Athena Dialog/Chatbot System{% endblock %}
+
+{% block content %}
+<div class="jumbotron container">
+    <h1>Athena Dialog/Chatbot System</h1>
+    <div>
+        <button onclick="window.location.href='{% url 'load_search_page' %}'" class="btn btn-primary">HYBRID DIALOG SYSTEM</button>
+        <button onclick="window.location.href='{% url 'chatbot' %}'" class="btn btn-primary">CHATBOT</button>
+    </div>
+</div>
+{% endblock %}

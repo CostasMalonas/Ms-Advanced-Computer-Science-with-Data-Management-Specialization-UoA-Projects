@@ -1,0 +1,33 @@
+{% extends "chatbot/base.html" %}
+
+{% block title %}Chatbot{% endblock %}
+
+{% block content %}
+    <div class="jumbotron container">
+        <h1>Athena Medical Chatbot</h1>
+    </div>
+    <div class="box">
+        <div class="chatbot-screen">
+
+            <div class="messages_chatbot">
+                {% for convo in chat_history %}
+                {% if convo.user %}
+                    <div class="user-rectangle">{{ convo.user }}</div>
+                {% endif %}
+                <div class="rectangle">{{ convo.bot }}</div>
+                {% endfor %}
+            </div>
+            <div class="input-container"> 
+                <form method="POST" action=".">
+                    {% csrf_token %}
+                    <div class="input-field-wrapper">
+                        <div class="element-input-field">
+                            <input type="text" name="user_input" class="chatbot-input" placeholder="Please type your question..." required>
+                            <button class="element-button" type="submit">SUBMIT</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

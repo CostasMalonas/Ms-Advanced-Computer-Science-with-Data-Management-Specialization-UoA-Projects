@@ -1,0 +1,581 @@
+{% extends "chatbot/base.html" %}
+
+{% block title %}Αθηνά{% endblock %}
+
+{% block content %}
+<body>
+    <div class="box">
+        <div class="jumbotron container">
+            <h1>Athena Medical Chatbox</h1>
+            <h4>This chatbot is a university student's master thesis project and is experimental. 
+                It is not designed to replace professional medical advice or diagnosis. 
+                Always consult a healthcare provider for health concerns.
+            </h4>
+        </div>
+
+
+        <div id="chatbox" class="chatbot-screen">
+            <div class="messages">
+
+                <div class="rectangle">Hello! I am Athena, your personal Medical Assistant. Before you type (or say) your symptoms, please choose from the categories at the right, the system you believe your condition affects the most.</div>
+            </div>
+
+            <div class="element-input-field">
+                <input type="text" id="chatInput" placeholder="Type your response here..." />
+                <button class="element-button" id="submitBtn">Submit</button>
+                <button class="element-button" id="searchButton">Search</button>
+                <button class="element-button" id="filterButton">Filter based on Categories</button>
+            </div>
+        </div>
+
+
+        <div id="symptomListChat" class="chatbot-screen">
+
+        </div>
+    </div>
+    
+    <script>
+
+
+
+    $(document).ready(function() {
+        $.get('/show_categories/', function(data) {
+            const categories = data.categories; // Fetch categories
+            let categoryList = document.getElementById('symptomListChat'); // Get the element to display categories
+
+            for (let category of categories) {
+                let div = document.createElement('div');
+                div.textContent = category;
+                div.addEventListener('click', function() {
+                    handleCategoryClick(category); // Handle the category click
+                });
+                categoryList.appendChild(div);
+            }
+        });
+    });
+
+    let selectedCategories = [];
+
+
+    function handleCategoryClick(category) {
+        var category = event.target.textContent;
+        if (!selectedCategories.includes(category)) { //Check if it is already have been clicked
+            selectedCategories.push(category);
+            console.log("Selected Categories:", selectedCategories);
+            let messagesDiv = document.querySelector("#chatbox .messages");
+            messagesDiv.innerHTML += "<div class='user-message'>Category selected: " + category + "</div>";
+
+            // Update the UI to reflect the selected category
+            // For instance, highlight the selected category in the category list
+        }
+        // If the category is already selected, you can choose to ignore the click or provide feedback
+    }
+
+    function handleCategoryResponse() {
+        // Fetch and display symptoms based on selected categories
+        console.log("handleCategoryResponse called");
+        console.log("Selected Categories 2:", selectedCategories);
+        $.get('/search_symptoms/', { categories: selectedCategories.join(',') }, function(data) {
+            const symptoms = data.symptoms;
+            let symptomList = document.getElementById('symptomListChat');
+            symptomList.innerHTML = ''; // Clear existing list
+
+            for (let symptom of symptoms) {
+                let div = document.createElement('div');
+                div.textContent = symptom;
+                div.addEventListener('click', addToSelectedSymptoms);
+                symptomList.appendChild(div);
+            }
+        });
+
+        // Prepare the chatbox for the next question
+        let messagesDiv = document.querySelector("#chatbox .messages");
+        messagesDiv.innerHTML += "<div>Is your condition Psychological (Answer yes) or Physiological (Answer No)?</div>";
+        currentExpectation = "psychological"; // Set the next expectation
+
+    }
+
+
+
+
+    let isPsychological = "All";  // default to All
+    let ageGroup = "ALL_AGES";  // default to ALL_AGES
+    let gender = "ALL_GENDERS";  // default to ALL_GENDERS
+    let age_val = 'ALL_AGES'; // defaunt to ALL_AGES (we will use that to filter out the returned conditions)
+    
+
+
+    let currentExpectation = "psychological"; // After we have selected categories we proceed by filtering psychological symptoms
+
+    function handleInputSubmit() {
+        let inputVal = document.getElementById('chatInput').value; // Get the value the user typed
+        let messagesDiv = document.querySelector("#chatbox .messages"); /// Access the chatbox messages section
+
+        switch(currentExpectation) {
+            case "psychological":
+                handlePsychologicalResponse(); // call handlePsychologicalResponse
+                break;
+            case "age":
+                handleAgeResponse(); // call handleAgeResponse
+                //currentExpectation = "gender";  // Next, we'll be expecting gender
+                break;
+            case "gender":
+                handleGenderResponse(); // call handleGenderResponse
+                //currentExpectation = "symptoms";  // Next, we'll be expecting symptoms
+                break;
+            case "symptoms":
+                messagesDiv.innerHTML += "<div class='user-message'>You: " + inputVal + "</div>"; // Show the input of the user to the chatbox
+                searchFunction('symptomListChat', 'chatInput');
+                break;
+            default:
+                console.error("Unexpected state");
+                break;
+        }
+
+        document.getElementById('chatInput').value = "";  // Clear the input
+    }
+
+
+    function handlePsychologicalResponse() {
+        let response = document.getElementById('chatInput').value.toLowerCase(); // get the response of the user
+        let messagesDiv = document.querySelector("#chatbox .messages"); // access the chatbox
+        if (!response) return; // Exit if there's no input
+
+        let responsesForYes = ["yes"];
+        let responsesForNo = ["no", "not"];
+        let responsesForUnsure = ["don't know", "not sure"];
+
+        if (responsesForYes.includes(response)) {
+            isPsychological = "Y";
+        } else if (responsesForNo.includes(response)) {
+            isPsychological = "N";
+        } else if (responsesForUnsure.includes(response)) {
+            isPsychological = "N";
+        }else {
+        // Handle any other response that doesn't fit the above categories
+        messagesDiv.innerHTML += "<div>I'm sorry, I didn't understand that. Please answer with 'yes', 'no', or 'not sure'.</div>";
+        return;
+        }
+
+
+        // Regardless of the user's response, we display the message and ask for symptoms
+        messagesDiv.innerHTML += "<div class='user-message'>You: " + response + "</div>";
+        //messagesDiv.innerHTML += "<div>Please type your symptoms below.</div>";
+
+        document.getElementById('chatInput').setAttribute("oninput", "searchFunction('symptomListChat', 'chatInput')");
+        document.getElementById('chatInput').value = "";  // Clear the input
+
+        // Now, we'll fetch and display the updated list of symptoms based on the user's response
+        $.get('/search_symptoms/', { categories: selectedCategories.join(','), isPsychological: isPsychological }, function (data) {
+            const symptoms = data.symptoms;
+            let symptomList = document.getElementById('symptomListChat');
+            symptomList.innerHTML = "";  // Clear existing list
+
+            for (let symptom of symptoms) {
+                let li = document.createElement('div');
+                li.textContent = symptom;
+                li.addEventListener('click', addToSelectedSymptoms);
+                symptomList.appendChild(li);
+            }
+        });
+
+        messagesDiv.innerHTML += "<div>What is your age?</div>";
+        currentExpectation = "age";  // Next, we'll be expecting age
+    }
+
+
+
+
+    function handleAgeResponse() {
+        let response = parseInt(document.getElementById('chatInput').value); // get the user's age as an integer
+        let messagesDiv = document.querySelector("#chatbox .messages");
+
+        // Clear the input field
+        document.getElementById('chatInput').value = "";
+
+        // Assign an age group to the variable ageGroup based on the age response
+        if (response >= 0 && response <= 2) {
+            ageGroup = "Infants";
+            age_val = "Infants";
+        } else if (response >= 3 && response <= 16) {
+            ageGroup = "Children";
+            age_val = "Children";
+        } else if (response >= 17 && response <= 120) {
+            ageGroup = "Adults";
+            age_val = "Adults";
+        } else {
+            messagesDiv.innerHTML += "<div>Invalid age. Please try again.</div>";
+            return;
+        }
+
+        // Display the user's message
+        messagesDiv.innerHTML += "<div class='user-message'>You: " + response + "</div>";
+
+        // Fetch and display the updated list of symptoms based on the age group
+        $.get('/search_symptoms/', { categories: selectedCategories.join(','), isPsychological: isPsychological, ageGroup: ageGroup }, function (data) {
+            const symptoms = data.symptoms;
+            let symptomList = document.getElementById('symptomListChat');
+            symptomList.innerHTML = ""; // Clear existing list
+
+            for (let symptom of symptoms) {
+                let li = document.createElement('div');
+                li.textContent = symptom;
+                li.addEventListener('click', addToSelectedSymptoms);
+                symptomList.appendChild(li);
+            }
+        });
+
+        // Ask the next question
+        messagesDiv.innerHTML += "<div>What is your birth assigned gender? Please type (or say) 1 for Female and 2 for Male.</div>";
+        currentExpectation = "gender";
+    // You may need to implement handleGenderResponse similar to handleAgeResponse and handlePsychologicalResponse
+    // And also call it at the appropriate time
+    }
+
+
+    let gender_val = "ALL_GENDERS";
+    function handleGenderResponse() {
+        let response = document.getElementById('chatInput').value; // Get the user's response
+        let messagesDiv = document.querySelector("#chatbox .messages");
+
+        // Determine the gender based on the user's input
+        if (response === "1") {
+            gender = "Female";
+        } else if (response === "2") {
+            gender = "Male";
+        } else {
+            messagesDiv.innerHTML += "<div>Invalid choice. Please type (or say) 1 for Female and 2 for Male.</div>";
+            return;
+        }
+        gender_val = gender;
+        // Display the user's gender selection
+        messagesDiv.innerHTML += "<div class='user-message'>You: " + (gender === "Male" ? "Male" : "Female") + "</div>";
+
+        // Clear the input field
+        document.getElementById('chatInput').value = "";
+
+        // Fetch and display the updated list of symptoms based on gender
+        $.get('/search_symptoms/', { categories: selectedCategories.join(','), isPsychological: isPsychological, ageGroup: ageGroup, gender: gender }, function (data) {
+            const symptoms = data.symptoms;
+            let symptomList = document.getElementById('symptomListChat');
+            symptomList.innerHTML = ""; // Clear existing list
+
+            symptoms.forEach(symptom => {
+                let li = document.createElement('div');
+                li.textContent = symptom;
+                li.addEventListener('click', addToSelectedSymptoms);
+                symptomList.appendChild(li);
+            });
+        });
+
+        // Prompt the user to start entering symptoms
+        currentExpectation = "symptoms";
+        messagesDiv.innerHTML += "<div>Please type (or say) your symptoms below.</div>"; 
+        document.getElementById('chatInput').setAttribute("oninput", "searchFunction('symptomListChat', 'chatInput')");
+    }
+
+
+    //Performs a search for symptoms based on the user's input and updates the displayed symptom list
+    function searchFunction(targetListId, queryInputId) {
+
+        if (isPsychological == "All" && ageGroup == "ALL_AGES" && gender == "ALL_GENDERS" && age_val == 'ALL_AGES'){
+            console.log("I am searching for categories now");
+            let query = document.getElementById(queryInputId).value; // get what the user has typed in the chat input
+            // Perform category search
+            $.get('/search_categories/', { q: query }, function(data) {
+                const categories = data.categories;
+                let categoryList = document.getElementById(targetListId);
+                categoryList.innerHTML = ""; // Clear the previous list
+
+                for (let category of categories) {
+                    let div = document.createElement('div');
+                    div.textContent = category;
+                    div.addEventListener('click', handleCategoryClick);
+                    categoryList.appendChild(div);
+                }
+            });
+        } else {
+            document.getElementById('submitBtn').addEventListener('click', handleInputSubmit);
+            let query = document.getElementById(queryInputId).value; // Get the value from the input element
+            //// Perform an AJAX GET request to search for symptoms based on the user's input and additional filters. (autocomplete)
+            $.get('/search_symptoms/', { categories: selectedCategories.join(','), q: query, isPsychological: isPsychological, ageGroup: ageGroup, gender: gender }, function (data) {
+                const symptoms = data.symptoms; // Extract the returned symptoms from the server's response.
+                let symptomList = document.getElementById(targetListId); // Access the HTML element where the list of symptoms will be displayed
+                symptomList.innerHTML = ""; // Clear the previous list
+                
+                // Iterate over the returned symptoms and create a new list item for each one
+                for (let symptom of symptoms) {
+                    // Attach an event listener to each symptom to handle its selection
+                    let li = document.createElement('div');
+                    li.textContent = symptom;
+                    li.addEventListener('click', addToSelectedSymptoms);
+                    symptomList.appendChild(li);
+                }
+            });
+        }
+    }
+
+    function addToSelectedSymptoms(event) {
+        console.log("Symptom clicked:", event.target.textContent);
+        var clickedSymptom = event.target.textContent;
+        var currentSymptoms = [];
+        console.log("Number of items in the selected symptoms box:", $("#selected-symptoms-box li").length);
+        // Collect current symptoms from the selected symptoms box
+        $("#selected-symptoms-box li").each(function () {
+            currentSymptoms.push($(this).text());
+            console.log("Adding symptom:", $(this).text());
+        });
+        console.log("CURRENT SYMPTOMS:", currentSymptoms);
+        // Add the clicked symptom to the chatbox
+        let messagesDiv = document.querySelector("#chatbox .messages");
+        messagesDiv.innerHTML += "<div class='user-message'>You: " + clickedSymptom + "</div>";
+
+        // Check if symptom is already in the box, if not add it
+        if (!currentSymptoms.includes(clickedSymptom)) {
+            currentSymptoms.push(clickedSymptom);
+        }
+
+        // Send the list to the backend
+        $.ajax({
+            url: '/store_symptoms/', // send it to the store_symptoms
+            method: 'POST',
+            data: JSON.stringify({ Symptoms: currentSymptoms }),
+            contentType: "application/json",
+            success: function (data) {
+                console.log("Received Symptoms:", data);
+                if (data){
+                    // Update the selected symptoms box with the data returned from the backend
+                    $("#selected-symptoms-box").empty();
+                    console.log("Received Symptoms:", data.Symtoms);
+                    data.Symptoms.forEach(function (symptom) {
+                        var newSymptomLi = $('<li></li>').text(symptom);
+                        $("#selected-symptoms-box").append(newSymptomLi);
+                    });
+                } else {
+                    console.error("Error in response, expected symptoms list, received:", data);
+                }
+
+            }
+        });
+    }
+
+        
+    // function to get the conditions after the search button have been clicked
+    document.getElementById("searchButton").addEventListener("click", function() {
+        fetch("/get_conditions/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({age: age_val, gender:gender_val})
+        })
+        .then(response => response.json())
+        .then(data => {
+            let conditions = data.conditions;
+            let listItem = document.createElement("li");
+            // Create the initial message
+            let messageDiv = document.createElement("div");
+            messageDiv.textContent = "Based on your symptoms, potential conditions are (Please keep in mind that this is only an experimental system and you should always advice a professional):";
+            document.querySelector("#chatbox .messages").appendChild(messageDiv);
+
+            // Create an unordered list for the conditions
+            let conditionsList = document.createElement("ul");
+
+            conditions.forEach(condition => {
+                let conditionItem = document.createElement("div");
+                conditionItem.className = "condition-item"; // Add a class for styling
+
+                let conditionText = document.createElement("div");
+                conditionText.textContent = condition.name;
+                conditionText.className = "condition-text"; // Add a class for styling
+                
+                let buttonsContainer = document.createElement("div");
+                buttonsContainer.className = "buttons-container"; // Add a class for styling
+
+                let checkButton = document.createElement("button");
+                checkButton.className = "element-button check-possibility";
+                checkButton.textContent = "CHECK POSSIBILITY";
+                checkButton.setAttribute("title", "Answer some questions to calculate the percentage of the possibility to have that condition.");
+                checkButton.addEventListener('click', function(){
+                    displayPossibilityChatbox(condition.questions);
+                });
+
+                // Create the 'MORE INFO' button
+                let infoButton = document.createElement("button");
+                infoButton.className = "element-button more-info";
+                infoButton.textContent = "MORE INFO";
+                infoButton.setAttribute("title", "Ask informative questions about that specific condition.");
+                infoButton.onclick = function() {
+                    displayInfoChatbox(condition.name);
+                };
+
+                buttonsContainer.appendChild(checkButton);
+                buttonsContainer.appendChild(infoButton);
+
+                conditionItem.appendChild(conditionText);
+                conditionItem.appendChild(buttonsContainer);
+
+                conditionsList.appendChild(conditionItem);
+            });
+
+            document.querySelector("#chatbox .messages").appendChild(conditionsList);
+        });
+    });
+
+
+    function displayPossibilityChatbox(questions) {
+            let chatBoxContainer = document.getElementById("symptomListChat");
+            chatBoxContainer.innerHTML = ''; // Clear existing content
+
+            let possibilityChatBox = document.createElement("div");
+            possibilityChatBox.className = "possibility_chat_box";
+
+            questions.forEach((question, index) => {
+                let questionDiv = document.createElement("div");
+                questionDiv.className = "question_item"
+
+                // Question text
+                let questionText = document.createElement("span");
+                questionText.textContent = question;
+                questionDiv.appendChild(questionText);
+
+                // Yes radio button
+                let yesInput = document.createElement("input");
+                yesInput.className = "radio_button_question"
+                yesInput.setAttribute("type", "radio");
+                yesInput.setAttribute("name", "question" + index);
+                yesInput.setAttribute("value", "yes");
+                yesInput.setAttribute("id", "yes" + index);
+                let yesLabel = document.createElement("label");
+                yesLabel.setAttribute("for", "yes" + index);
+                yesLabel.textContent = "Yes";
+                questionDiv.appendChild(yesInput);
+                questionDiv.appendChild(yesLabel);
+
+                // No radio button
+                let noInput = document.createElement("input");
+                noInput.className  = "radio_button_question";
+                noInput.setAttribute("type", "radio");
+                noInput.setAttribute("name", "question" + index);
+                noInput.setAttribute("value", "no");
+                noInput.setAttribute("id", "no" + index);
+                let noLabel = document.createElement("label");
+                noLabel.setAttribute("for", "no" + index);
+                noLabel.textContent = "No";
+                questionDiv.appendChild(noInput);
+                questionDiv.appendChild(noLabel);
+
+                possibilityChatBox.appendChild(questionDiv);
+
+                // Add event listeners to radio buttons
+                yesInput.addEventListener('change', updatePossibilityPercentage);
+                noInput.addEventListener('change', updatePossibilityPercentage);
+            });
+
+        chatBoxContainer.appendChild(possibilityChatBox);
+        // Add a div to display the possibility percentage
+        let possibilityPercentageDiv = document.createElement("div");
+        possibilityPercentageDiv.id = "possibility-percentage";
+        chatBoxContainer.appendChild(possibilityPercentageDiv);
+    }
+
+
+    function updatePossibilityPercentage() {
+        let totalQuestions = document.querySelectorAll('.possibility_chat_box .question_item').length; // Take how many questions exist at that element
+        let yesAnswers = document.querySelectorAll('input[type="radio"][value="yes"]:checked').length; // Check what radio buttons are clicked
+        let percentage = (yesAnswers / totalQuestions) * 100; // calculate percentage
+
+        // Update the display
+        let possibilityPercentageDiv = document.getElementById("possibility-percentage");
+        possibilityPercentageDiv.textContent = "Possibility " + percentage.toFixed(0) + "%";
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('filterButton').addEventListener('click', function() {
+            console.log("Filter button clicked");
+            handleCategoryResponse();
+        });
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', handleInputSubmit);
+
+    // Bind the event listener to the input field
+    document.getElementById('chatInput').addEventListener('keyup', function() {
+        searchFunction('symptomListChat', 'chatInput');
+    });
+
+    function displayInfoChatbox(conditionName) {
+        let chatBoxContainer = document.getElementById("symptomListChat");
+        chatBoxContainer.innerHTML = ''; // Clear existing content
+
+        // Create a div for messages that will scroll
+        let messagesContainer = document.createElement("div");
+        messagesContainer.style.overflowY = "auto";
+        messagesContainer.style.height = "calc(100% - 60px)"; // Adjust this value based on the height of info-chat-box
+        chatBoxContainer.appendChild(messagesContainer);
+
+        // Create new elements for info chatbox
+        let inputContainerChatBot = document.createElement("div");
+        let infoChatBox = document.createElement("div");
+        let queryInput = document.createElement("input");
+        let submitButton = document.createElement("button");
+
+        inputContainerChatBot.className = "input-container";
+        infoChatBox.className = "info-chat-box";
+        submitButton.className = "info-submit-button";
+        queryInput.className = "info-input"; // Apply new class for styling
+        queryInput.placeholder = "Ask a question about " + conditionName;
+        submitButton.textContent = "Ask question";
+
+        submitButton.onclick = function() {
+            let userQuery = queryInput.value;
+
+            // Display user's question in messagesContainer
+            let userQuestionDiv = document.createElement("div");
+            userQuestionDiv.className = 'user-message';
+            userQuestionDiv.textContent = "You: " + userQuery;
+            messagesContainer.appendChild(userQuestionDiv);
+
+            queryInput.value = ""; // Clear the input box after asking the question
+
+            // Send the question to the backend and get the answer
+            fetch('/get_answer/', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ question: userQuery, condition: conditionName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the answer in messagesContainer
+                let answerDiv = document.createElement("div");
+                answerDiv.className = 'answer-message';
+                answerDiv.textContent = data.answer; // Assuming the response has an 'answer' field
+                messagesContainer.appendChild(answerDiv);
+
+                // Scroll to the bottom of the messagesContainer
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+
+        infoChatBox.appendChild(queryInput);
+        infoChatBox.appendChild(submitButton);
+        inputContainerChatBot.appendChild(infoChatBox)
+        chatBoxContainer.appendChild(inputContainerChatBot);
+    }
+
+
+
+
+
+</script>
+{% endblock %}
+</body>
+
+</html>
