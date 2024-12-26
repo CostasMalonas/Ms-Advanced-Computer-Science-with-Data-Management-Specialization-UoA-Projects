@@ -1,3 +1,8 @@
 # ATHENA MEDICAL CHATBOT
 
-- Python 3.x installed 
+- python3 -m venv venv
+- venv\Scripts\activate
+- pip install -r requirements.txt
+
+## HYBRID DIALOG SYSTEM case
+
