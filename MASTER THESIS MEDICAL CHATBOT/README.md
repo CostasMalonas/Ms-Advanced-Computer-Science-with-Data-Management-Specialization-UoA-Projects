@@ -6,3 +6,5 @@
 
 ## HYBRID DIALOG SYSTEM case
 
+Click or type and then click at any category at the right list
+![choose category](images/screenshot.png)
